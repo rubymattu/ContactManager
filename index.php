@@ -1,6 +1,15 @@
+<?php
+  session_start();
+  require('database.php');
+  $queryContacts = 'SELECT * FROM contacts';
+  $statement1 = $db->prepare($queryContacts);
+  $statement1->execute();
+  $contacts = $statement1->fetchAll();
+  $statement1->closeCursor();
+?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Manager - Home</title>
@@ -25,6 +34,15 @@
           <th>Status</th>
           <th>Birth Date</th>
         </tr>
+        <?php foreach ($contacts as $contact) : ?>
+          <tr>
+            <td><?php echo $contact['firstName']; ?></td>
+            <td><?php echo $contact['lastName']; ?></td>
+            <td><?php echo $contact['emailAddress']; ?></td>
+            <td><?php echo $contact['phoneNumber']; ?></td>
+            <td><?php echo $contact['status']; ?></td>
+            <td><?php echo $contact['dob']; ?></td>
+          </tr>
       </table>
   </main>
   <?php
