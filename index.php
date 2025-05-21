@@ -43,6 +43,7 @@
             <td><?php echo $contact['status']; ?></td>
             <td><?php echo $contact['dob']; ?></td>
           </tr>
+          <?php endforeach; ?>
       </table>
   </main>
   <?php
