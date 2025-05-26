@@ -45,6 +45,7 @@
           </tr>
           <?php endforeach; ?>
       </table>
+      <p><a href='add_contact_form.php'>Add New Contact</a></p>
   </main>
   <?php
   // Include the footer file
