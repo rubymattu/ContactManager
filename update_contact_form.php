@@ -47,8 +47,10 @@
       <input type="tel" name="phoneNumber" value="<?php echo $contact['phoneNumber'] ?>"><br>
 
       <label for="status">Status:</label>
-      <input type="radio" name="status" value="member" <?php echo ($contact['status'] == 'member') ? 'checked' : ''; ?>>
-      <input type="radio" name="status" value="non-member" <?php echo ($contact['status'] == 'non-member') ? 'checked' : ''; ?>>
+     <input type="radio" name="status" value="member"
+        <?php echo ($contact['status'] == 'member') ? 'checked' : ''; ?> />Member<br />
+      <input type="radio" name="status" value="nonmember"
+          <?php echo ($contact['status'] == 'nonmember') ? 'checked' : ''; ?> />Non-Member<br />
     
 
       <label for="dob">Birth Date:</label>

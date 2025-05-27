@@ -32,9 +32,8 @@
       <input type="tel" name="phoneNumber"><br>
 
       <label for="status">Status:</label>
-      <input type="radio" name="status" value="member">
-
-      <input type="radio" name="status" value="non-member">
+      <input type="radio" name="status" value="member" />Member<br />
+      <input type="radio" name="status" value="nonmember" />Non-Member<br />
 
 
       <label for="dob">Birth Date:</label>
