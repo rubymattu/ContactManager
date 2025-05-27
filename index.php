@@ -33,6 +33,8 @@
           <th>Phone Number</th>
           <th>Status</th>
           <th>Birth Date</th>
+          <th>&nbsp;</th> <!--  for the edit button -->
+          <th>&nbsp;</th> <!--  for the delete button -->
         </tr>
         <?php foreach ($contacts as $contact) : ?>
           <tr>
@@ -42,6 +44,18 @@
             <td><?php echo $contact['phoneNumber']; ?></td>
             <td><?php echo $contact['status']; ?></td>
             <td><?php echo $contact['dob']; ?></td>
+            <td>
+              <form action='contact_update_form.php' method='post'>
+                <input type='hidden' name='contactID' value='<?php echo $contact['contactID']; ?>'/>
+                <input type='submit' value='Update'/>
+              </form>
+            </td><!-- Edit button -->
+            <td>
+              <form action='delete_contact.php' method='post'>
+                <input type='hidden' name='contactID' value='<?php echo $contact['contactID']; ?>'/>
+                <input type='submit' value='Delete'/>
+              </form>
+            </td><!-- Delete button -->
           </tr>
           <?php endforeach; ?>
       </table>
