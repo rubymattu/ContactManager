@@ -32,10 +32,10 @@
       <input type="tel" name="phoneNumber"><br>
 
       <label for="status">Status:</label>
-      <input type="radio" name="status" value="member" checked>
-      <label for="active">Member</label>
+      <input type="radio" name="status" value="member">
+
       <input type="radio" name="status" value="non-member">
-      <label for="inactive">Non-Member</label><br>
+
 
       <label for="dob">Birth Date:</label>
       <input type="date" name="dob"><br>

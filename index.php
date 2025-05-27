@@ -45,7 +45,7 @@
             <td><?php echo $contact['status']; ?></td>
             <td><?php echo $contact['dob']; ?></td>
             <td>
-              <form action='contact_update_form.php' method='post'>
+              <form action='update_contact_form.php' method='post'>
                 <input type='hidden' name='contactID' value='<?php echo $contact['contactID']; ?>'/>
                 <input type='submit' value='Update'/>
               </form>
