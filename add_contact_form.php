@@ -18,7 +18,8 @@
   <main>
     <h2>Add New Contact</h2>
     <form action="add_contact.php" method="post" id="addContactForm" enctype="multipart/form-data">
-      <div id="formData">
+      
+    <div id="formData">
       <label for="firstName">First Name:</label>
       <input type="text" name="firstName" required><br>
 
@@ -32,7 +33,7 @@
       <input type="tel" name="phoneNumber"><br>
 
       <label for="status">Status:</label>
-      <input type="radio" name="status" value="member" />Member<br />
+      <input type="radio" name="status" value="member" />Member
       <input type="radio" name="status" value="nonmember" />Non-Member<br />
 
 

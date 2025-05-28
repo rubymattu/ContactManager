@@ -1,19 +1,129 @@
-
+/* Reset & Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
+
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f0f0f0;
   color: #333;
+  text-align: center;
+  line-height: 1.6;
 }
-input {
-  height: 40px;
-  width: 100%;
-  padding: 0 10px;
+
+/* Main Layout */
+main {
+  display: block;
+  width: 80%;
+  margin: 2em auto;
+  padding: 1.5em;
+  background-color: #fff;
+  border: 2px solid navy;
+  border-radius: 8px;
+}
+
+/* Headings */
+h1, h2 {
+  color: navy;
+  padding: 1em 0;
+}
+h1 {
+  padding: 100px 0;
+}
+
+/* Forms */
+form {
+  text-align: center;
+  margin-top: 1em;
+}
+
+label {
+  display: inline-block;
+  width: 150px;
+  margin: 0.5em 0;
+  text-align: left;;
+  vertical-align: top;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"] {
+  width: 250px;
+  padding: 0.4em;
+  margin-bottom: 0.8em;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
+}
+
+/* Radio buttons inline */
+input[type="radio"] {
+  margin-left: 10px;
+  margin-right: 4px;
+}
+
+#buttons {
+  margin-top: 1em;
+}
+
+input[type="submit"] {
+  width: 10em;
+  background-color: navy;
+  color: white;
+  border: none;
+  padding: 0.6em;
+  margin-top: 0.5em;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Clear floats */
+br {
+  clear: both;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5em;
+  margin-bottom: 2em;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.75em;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Action buttons in table */
+form input[type="submit"] {
+  width: auto;
+  padding: 0.4em 1em;
+  font-size: 0.9em;
+}
+
+/* Links */
+a {
+  color: #0d81ed;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
 }

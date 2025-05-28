@@ -26,7 +26,7 @@
   $statement1->closeCursor();
 
   foreach ($contacts as $contact) {
-      if ($contact['emailAddress'] == $emailAddress && $contact['contactID'] != $contactID) {
+      if ($emailAddress == $contact['emailAddress'] &&  $contactID != $contact['contactID']) {
           //set an error message in the session
           $_SESSION['error'] = 'Email address already exists.';
           header('Location: error.php');
