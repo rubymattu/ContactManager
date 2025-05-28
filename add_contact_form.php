@@ -20,6 +20,10 @@
     <form action="add_contact.php" method="post" id="addContactForm" enctype="multipart/form-data">
       
     <div id="formData">
+      
+      <label for="image">Upload Image:</label>
+      <input type="file" name="file1"><br>
+
       <label for="firstName">First Name:</label>
       <input type="text" name="firstName" required><br>
 

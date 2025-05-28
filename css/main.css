@@ -64,6 +64,9 @@ input[type="radio"] {
   margin-left: 10px;
   margin-right: 4px;
 }
+input[type="file"] {
+  
+}
 
 #buttons {
   margin-top: 1em;

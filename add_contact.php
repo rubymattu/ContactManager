@@ -1,7 +1,30 @@
 <?php
-  session_start();
+ session_start();
+
+    require_once 'image_util.php'; // the process_image function
+
+    $image_dir = 'images';
+    $image_dir_path = getcwd() . DIRECTORY_SEPARATOR . $image_dir;
+
+    if (isset($_FILES['file1']))
+    {
+        $filename = $_FILES['file1']['name'];
+
+        if (!empty($filename))
+        {
+            $source = $_FILES['file1']['tmp_name'];
+
+            $target = $image_dir_path . DIRECTORY_SEPARATOR . $filename;
+
+            move_uploaded_file($source, $target);
+
+            // create the '400' and '100' versions of the image
+            process_image($image_dir_path, $filename);
+        }
+    }
 
   //get data from the form
+  $imageName = $_FILES['file1']['name'];
   $firstName = filter_input(INPUT_POST, 'firstName');
   $lastName = filter_input(INPUT_POST, 'lastName');
   $emailAddress = filter_input(INPUT_POST, 'emailAddress');
@@ -35,8 +58,7 @@
   //validate the data
   if ($firstName == null || $lastName == null || $emailAddress == null || 
       $phoneNumber == null || $status == null || $dob == null) {
-      //set an error message in the session
-      session_start();
+
       //redirect to the error page
       $_SESSION['error'] = 'Please fill in all required fields.';
       header('Location: error.php');
@@ -44,10 +66,11 @@
   } else {
           //insert data into the database
       $query = 'INSERT INTO contacts
-                  (firstName, lastName, emailAddress, phoneNumber, status, dob)
+                  (imageName, firstName, lastName, emailAddress, phoneNumber, status, dob)
                 VALUES
-                  (:firstName, :lastName, :emailAddress, :phoneNumber, :status, :dob)';
+                  (:imageName, :firstName, :lastName, :emailAddress, :phoneNumber, :status, :dob)';
       $statement = $db->prepare($query);
+      $statement->bindValue(':imageName', $imageName);
       $statement->bindValue(':firstName', $firstName);
       $statement->bindValue(':lastName', $lastName);
       $statement->bindValue(':emailAddress', $emailAddress);

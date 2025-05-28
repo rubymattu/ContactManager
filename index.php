@@ -27,6 +27,7 @@
     <h2>Contact List</h2>
     <table>
         <tr>
+          <th>Photo</th>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email Address</th>
@@ -38,6 +39,7 @@
         </tr>
         <?php foreach ($contacts as $contact) : ?>
           <tr>
+            <td><img src="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" alt="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" style="width:100px; height:auto;" /></td>
             <td><?php echo $contact['firstName']; ?></td>
             <td><?php echo $contact['lastName']; ?></td>
             <td><?php echo $contact['emailAddress']; ?></td>
