@@ -48,9 +48,9 @@
 
       <label for="status">Status:</label>
      <input type="radio" name="status" value="member"
-        <?php echo ($contact['status'] == 'member') ? 'checked' : ''; ?> />Member<br />
+                        <?php echo ($contact['status'] == 'member') ? 'checked' : ''; ?> />Member
       <input type="radio" name="status" value="nonmember"
-          <?php echo ($contact['status'] == 'nonmember') ? 'checked' : ''; ?> />Non-Member<br />
+                        <?php echo ($contact['status'] == 'nonmember') ? 'checked' : ''; ?> />Non-Member<br />
     
 
       <label for="dob">Birth Date:</label>
