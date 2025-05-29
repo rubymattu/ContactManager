@@ -80,8 +80,6 @@
       $statement->execute();
       $statement->closeCursor();
   }
-
-
   
   $_SESSION['fullName'] = $firstName . ' ' . $lastName;
   //redirect to the confirmation page

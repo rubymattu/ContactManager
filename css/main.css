@@ -11,7 +11,6 @@ body {
   background-color: #f0f0f0;
   color: #333;
   text-align: center;
-  line-height: 1.6;
 }
 
 /* Main Layout */
@@ -28,7 +27,6 @@ main {
 /* Headings */
 h1, h2 {
   color: navy;
-  padding: 1em 0;
 }
 
 /* Forms */
