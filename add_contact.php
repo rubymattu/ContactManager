@@ -24,7 +24,7 @@
     }
 
   //get data from the form
-  $imageName = $_FILES['file1']['name'];
+//   $imageName = $_FILES['file1']['name'];
   $firstName = filter_input(INPUT_POST, 'firstName');
   $lastName = filter_input(INPUT_POST, 'lastName');
   $emailAddress = filter_input(INPUT_POST, 'emailAddress');
@@ -39,6 +39,15 @@
   // $phoneNumber = $_POST['phoneNumber'];
   // $status = $_POST['status'];
   // $dob = $_POST['dob'];
+
+  $file_name = $_FILES['file1']['name'];
+
+    // adjust the filename
+    $i = strrpos($filename, '.');
+    $image_name = substr($filename, 0, $i);
+    $ext = substr($filename, $i);
+
+    $image_name_100 = $image_name . '_100' . $ext;
 
   require_once('database.php');
 
@@ -70,7 +79,7 @@
                 VALUES
                   (:imageName, :firstName, :lastName, :emailAddress, :phoneNumber, :status, :dob)';
       $statement = $db->prepare($query);
-      $statement->bindValue(':imageName', $imageName);
+      $statement->bindValue(':imageName', $image_name_100);
       $statement->bindValue(':firstName', $firstName);
       $statement->bindValue(':lastName', $lastName);
       $statement->bindValue(':emailAddress', $emailAddress);

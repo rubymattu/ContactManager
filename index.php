@@ -39,7 +39,7 @@
         </tr>
         <?php foreach ($contacts as $contact) : ?>
           <tr>
-            <td><img src="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" alt="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" style="width:auto; height:100px;" /></td>
+            <td><img src="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" alt="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>"/></td>
             <td><?php echo $contact['firstName']; ?></td>
             <td><?php echo $contact['lastName']; ?></td>
             <td><?php echo $contact['emailAddress']; ?></td>
