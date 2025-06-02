@@ -1,5 +1,11 @@
 <?php
   session_start();
+
+  if (!isset($_SESSION['isLoggedIn'])) {
+    header('Location: login_form.php');
+    die();
+  }
+
   require('database.php');
   $queryContacts = 'SELECT * FROM contacts';
   $statement1 = $db->prepare($queryContacts);
@@ -24,7 +30,10 @@
   include 'header.php';
   ?>
   <main>
-    <h2>Contact List</h2>
+    <div id ='top'>
+      <h2>Contact List</h2>
+      <a href='logout.php' id="logout">Log Out</a>
+    </div>    
     <table>
         <tr>
           <th>Photo</th>
