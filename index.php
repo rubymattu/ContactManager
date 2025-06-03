@@ -1,17 +1,23 @@
 <?php
-  session_start();
+session_start();
 
-  if (!isset($_SESSION['isLoggedIn'])) {
-    header('Location: login_form.php');
-    die();
-  }
+if (!isset($_SESSION['isLoggedIn'])) {
+  header('Location: login_form.php');
+  die();
+}
 
-  require('database.php');
-  $queryContacts = 'SELECT * FROM contacts';
-  $statement1 = $db->prepare($queryContacts);
-  $statement1->execute();
-  $contacts = $statement1->fetchAll();
-  $statement1->closeCursor();
+require('database.php');
+
+// Join contacts and types tables to get typeName
+$queryContacts = '
+  SELECT contacts.*, contactTypes.typeName
+  FROM contacts
+  JOIN contactTypes ON contacts.typeID = contactTypes.typeID
+';
+$statement1 = $db->prepare($queryContacts);
+$statement1->execute();
+$contacts = $statement1->fetchAll();
+$statement1->closeCursor();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,59 +31,55 @@
   <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-  <?php
-  // Include the header file
-  include 'header.php';
-  ?>
+  <?php include 'header.php'; ?>
   <main>
-    <div id ='top'>
+    <div id="top">
       <h2>Contact List</h2>
-      <div id='topRight'>
-        <p> Welcome, <span id='name'><?php echo $_SESSION['userName'];?></span></p> 
-        <a href='logout.php' id="logout">Log Out</a>  
+      <div id="topRight">
+        <p>Welcome, <span id="name"><?php echo $_SESSION['userName']; ?></span></p> 
+        <a href="logout.php" id="logout">Log Out</a>  
       </div>   
     </div>    
     <table>
+      <tr>
+        <th>Photo</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email Address</th>
+        <th>Phone Number</th>
+        <th>Status</th>
+        <th>Birth Date</th>
+        <th>Contact Type</th> <!-- New column for typeName -->
+        <th>&nbsp;</th> <!-- Edit -->
+        <th>&nbsp;</th> <!-- Delete -->
+      </tr>
+      <?php foreach ($contacts as $contact) : ?>
         <tr>
-          <th>Photo</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email Address</th>
-          <th>Phone Number</th>
-          <th>Status</th>
-          <th>Birth Date</th>
-          <th>&nbsp;</th> <!--  for the edit button -->
-          <th>&nbsp;</th> <!--  for the delete button -->
+          <td><img src="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" alt="<?php echo htmlspecialchars($contact['imageName']); ?>"/></td>
+          <td><?php echo htmlspecialchars($contact['firstName']); ?></td>
+          <td><?php echo htmlspecialchars($contact['lastName']); ?></td>
+          <td><?php echo htmlspecialchars($contact['emailAddress']); ?></td>
+          <td><?php echo htmlspecialchars($contact['phoneNumber']); ?></td>
+          <td><?php echo htmlspecialchars($contact['status']); ?></td>
+          <td><?php echo htmlspecialchars($contact['dob']); ?></td>
+          <td><?php echo htmlspecialchars($contact['typeName']); ?></td>
+          <td>
+            <form action="update_contact_form.php" method="post">
+              <input type="hidden" name="contactID" value="<?php echo $contact['contactID']; ?>"/>
+              <input type="submit" value="Update"/>
+            </form>
+          </td>
+          <td>
+            <form action="delete_contact.php" method="post">
+              <input type="hidden" name="contactID" value="<?php echo $contact['contactID']; ?>"/>
+              <input type="submit" value="Delete"/>
+            </form>
+          </td>
         </tr>
-        <?php foreach ($contacts as $contact) : ?>
-          <tr>
-            <td><img src="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>" alt="<?php echo htmlspecialchars('./images/' . $contact['imageName']); ?>"/></td>
-            <td><?php echo $contact['firstName']; ?></td>
-            <td><?php echo $contact['lastName']; ?></td>
-            <td><?php echo $contact['emailAddress']; ?></td>
-            <td><?php echo $contact['phoneNumber']; ?></td>
-            <td><?php echo $contact['status']; ?></td>
-            <td><?php echo $contact['dob']; ?></td>
-            <td>
-              <form action='update_contact_form.php' method='post'>
-                <input type='hidden' name='contactID' value='<?php echo $contact['contactID']; ?>'/>
-                <input type='submit' value='Update'/>
-              </form>
-            </td><!-- Edit button -->
-            <td>
-              <form action='delete_contact.php' method='post'>
-                <input type='hidden' name='contactID' value='<?php echo $contact['contactID']; ?>'/>
-                <input type='submit' value='Delete'/>
-              </form>
-            </td><!-- Delete button -->
-          </tr>
-          <?php endforeach; ?>
-      </table>
-      <p><a href='add_contact_form.php'>Add New Contact</a></p>
+      <?php endforeach; ?>
+    </table>
+    <p><a href="add_contact_form.php">Add New Contact</a></p>
   </main>
-  <?php
-  // Include the footer file
-  include 'footer.php';
-  ?>
+  <?php include 'footer.php'; ?>
 </body>
 </html>

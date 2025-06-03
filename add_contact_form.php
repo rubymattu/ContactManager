@@ -1,4 +1,14 @@
+<?php
+require_once('database.php');
+include 'header.php';
 
+// Query the contactTypes table before the HTML
+$queryTypes = 'SELECT * FROM contactTypes';
+$statement = $db->prepare($queryTypes);
+$statement->execute();
+$types = $statement->fetchAll();
+$statement->closeCursor();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>  
@@ -11,52 +21,51 @@
   <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-  <?php
-  // Include the header file
-  include 'header.php';
-  ?>
   <main>
     <h2>Add New Contact</h2>
     <form action="add_contact.php" method="post" id="addContactForm" enctype="multipart/form-data">
-      
-    <div id="formData">
-      
-      <label for="image">Upload Image:</label>
-      <input type="file" name="file1"><br>
+      <div id="formData">
+        <label for="image">Upload Image:</label>
+        <input type="file" name="file1"><br>
 
-      <label for="firstName">First Name:</label>
-      <input type="text" name="firstName" required><br>
+        <label for="typeID">Contact Type:</label>
+        <select name="typeID" required>
+          <option value="">--Select Type--</option>
+          <?php foreach ($types as $type): ?>
+            <option value="<?php echo $type['typeID']; ?>">
+              <?php echo htmlspecialchars($type['typeName']); ?>
+            </option>
+          <?php endforeach; ?>
+        </select><br>
 
-      <label for="lastName">Last Name:</label>
-      <input type="text" name="lastName" required><br>
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" required><br>
 
-      <label for="emailAddress">Email Address:</label>
-      <input type="email" id="emailAddress" name="emailAddress" required><br>
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" required><br>
 
-      <label for="phoneNumber">Phone Number:</label>
-      <input type="tel" name="phoneNumber"><br>
+        <label for="emailAddress">Email Address:</label>
+        <input type="email" id="emailAddress" name="emailAddress" required><br>
 
-      <label for="status">Status:</label>
-      <input type="radio" name="status" value="member" />Member
-      <input type="radio" name="status" value="nonmember" />Non-Member<br />
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" name="phoneNumber"><br>
 
+        <label for="status">Status:</label>
+        <input type="radio" name="status" value="member" />Member
+        <input type="radio" name="status" value="nonmember" />Non-Member<br />
 
-      <label for="dob">Birth Date:</label>
-      <input type="date" name="dob"><br>
+        <label for="dob">Birth Date:</label>
+        <input type="date" name="dob"><br>
+
       </div> 
 
       <div id="buttons">
         <label for="submit">&nbsp;</label>
         <input type="submit" value="Save Contact" id="submit">
       </div>
-
     </form>
     <p><a href='index.php'>View Contact List</a></p>
-
   </main>
-  <?php
-  // Include the footer file
-  include 'footer.php';
-  ?>
+  <?php include 'footer.php'; ?>
 </body>
 </html>
