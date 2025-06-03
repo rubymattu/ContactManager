@@ -35,7 +35,7 @@
     $_SESSION['hash'] = $hash;
 
     // redirect to login confirmation
-    header('Location: index.php');
+    header('Location: login_confirmation.php');
     die();
   } elseif ($_SESSION['isLoggedIn'] == false) {
       $_SESSION = [];

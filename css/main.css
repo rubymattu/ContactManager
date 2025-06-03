@@ -34,18 +34,24 @@ h1 {
   padding: 2em;
 }
 h2 {
-  color: navy;
+  color: #000080;
   padding-bottom: 1em;
 }
 #top > h2 {
   float:left;
   padding: 25px 50px;
 }
-#top > a {
-  color: #c40404;
+#topRight {
   float: right;
-  font-size: .9em;
   padding: 25px 50px;
+}
+#topRight > a {
+  color: #c40404;
+  font-size: .9em;  
+}
+#name {
+  font-size: 1.3em;
+  color:#000080;
 }
 #registerLink {
   float: right;

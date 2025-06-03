@@ -32,7 +32,10 @@
   <main>
     <div id ='top'>
       <h2>Contact List</h2>
-      <a href='logout.php' id="logout">Log Out</a>
+      <div id='topRight'>
+        <p> Welcome, <span id='name'><?php echo $_SESSION['userName'];?></span></p> 
+        <a href='logout.php' id="logout">Log Out</a>  
+      </div>   
     </div>    
     <table>
         <tr>
