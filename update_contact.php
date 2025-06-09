@@ -1,9 +1,10 @@
 <?php
 session_start();
+
 require_once('database.php');
 require_once('image_util.php');
 
-// Collect POST data from your form
+// Get form inputs (aligned with form field names)
 $contactID = filter_input(INPUT_POST, 'contactID', FILTER_VALIDATE_INT);
 $firstName = filter_input(INPUT_POST, 'firstName');
 $lastName = filter_input(INPUT_POST, 'lastName');
@@ -12,78 +13,83 @@ $phoneNumber = filter_input(INPUT_POST, 'phoneNumber');
 $status = filter_input(INPUT_POST, 'status');
 $dob = filter_input(INPUT_POST, 'dob');
 $typeID = filter_input(INPUT_POST, 'typeID', FILTER_VALIDATE_INT);
-$image = $_FILES['image'] ?? null;
+$image = $_FILES['image'] ?? null; // changed from 'file1' to 'image'
 
-// Basic validation
-if (
-    $contactID === null || $contactID === false ||
-    $firstName === null || $lastName === null || $emailAddress === null || 
-    $phoneNumber === null || $dob === null || $typeID === null
-) {
-    $_SESSION["add_error"] = "Invalid contact data, Check all fields and try again.";
-    header("Location: error.php");
-    exit();
-}
+$image_dir = 'images/';
+$image_dir_path = getcwd() . DIRECTORY_SEPARATOR . $image_dir;
 
-// Check for duplicate email except current contact
-$queryContacts = 'SELECT * FROM contacts WHERE emailAddress = :email AND contactID != :contactID';
-$statement1 = $db->prepare($queryContacts);
-$statement1->bindValue(':email', $emailAddress);
-$statement1->bindValue(':contactID', $contactID);
-$statement1->execute();
-$existingContact = $statement1->fetch();
-$statement1->closeCursor();
-
-if ($existingContact) {
-    $_SESSION["add_error"] = "Invalid data, Duplicate Email Address. Try again.";
-    header("Location: error.php");
-    exit();
-}
-
-// Get current image name from database
-$query = 'SELECT imageName FROM contacts WHERE contactID = :contactID';
+// Get current contact to retrieve old image name
+$query = 'SELECT * FROM contacts WHERE contactID = :contactID';
 $statement = $db->prepare($query);
 $statement->bindValue(':contactID', $contactID);
 $statement->execute();
-$current = $statement->fetch();
-$currentImageName = $current['imageName'] ?? null;
+$contact = $statement->fetch();
 $statement->closeCursor();
 
-$imageName = $currentImageName;  // Default to current image if no new uploaded
+$oldImageName = $contact['imageName'];
+$imageName = $oldImageName;
 
-if ($image && $image['error'] === UPLOAD_ERR_OK) {
-    // Delete old image files if they exist
-    $baseDir = 'images/';
-    if ($currentImageName) {
-        // Assuming the format is name_100.ext
-        $dotPos = strrpos($currentImageName, '_100.');
-        if ($dotPos !== false) {
-            $originalName = substr($currentImageName, 0, $dotPos) . substr($currentImageName, $dotPos + 4);
-            $original = $baseDir . $originalName;
-            $img100 = $baseDir . $currentImageName;
-            $img400 = $baseDir . substr($currentImageName, 0, $dotPos) . '_400' . substr($currentImageName, $dotPos + 4);
+// Check for duplicate email
+$queryContacts = 'SELECT * FROM contacts';
+$statement1 = $db->prepare($queryContacts);
+$statement1->execute();
+$contacts = $statement1->fetchAll();
+$statement1->closeCursor();
 
-            if (file_exists($original)) unlink($original);
-            if (file_exists($img100)) unlink($img100);
-            if (file_exists($img400)) unlink($img400);
-        }
+foreach ($contacts as $c) {
+    if ($emailAddress == $c["emailAddress"] && $contactID != $c["contactID"]) {
+        $_SESSION["error"] = "Duplicate Email Address. Try again.";
+        header("Location: error.php");
+        exit();
     }
-
-    // Upload and process new image
-    $originalFilename = basename($image['name']);
-    $uploadPath = $baseDir . $originalFilename;
-    move_uploaded_file($image['tmp_name'], $uploadPath);
-    process_image($baseDir, $originalFilename);
-
-    // Save new _100 filename for database
-    $dotPosition = strrpos($originalFilename, '.');
-    $nameWithoutExt = substr($originalFilename, 0, $dotPosition);
-    $extension = substr($originalFilename, $dotPosition);
-    $imageName = $nameWithoutExt . '_100' . $extension;
 }
 
-// Update contact info in DB
-$query = 'UPDATE contacts
+// Validate required fields
+if (
+    empty($firstName) || empty($lastName) || empty($emailAddress) ||
+    empty($phoneNumber) || empty($dob) || !$typeID
+) {
+    $_SESSION["error"] = "Please fill in all required fields.";
+    header("Location: error.php");
+    exit();
+}
+
+// Handle new image upload
+if ($image && $image['error'] === UPLOAD_ERR_OK) {
+    $filename = basename($image['name']);
+    $target = $image_dir_path . $filename;
+    move_uploaded_file($image['tmp_name'], $target);
+
+    // Process image
+    process_image($image_dir_path, $filename);
+
+    // Generate _100 name
+    $dot = strrpos($filename, '.');
+    $imageName100 = substr($filename, 0, $dot) . '_100' . substr($filename, $dot);
+    $imageName = $imageName100;
+
+    // Delete old images if not placeholder
+    if ($oldImageName !== 'placeholder_100.jpg') {
+        $base = substr($oldImageName, 0, strrpos($oldImageName, '_100'));
+        $ext = substr($oldImageName, strrpos($oldImageName, '.'));
+        $filesToDelete = [
+            $base . $ext,
+            $base . '_100' . $ext,
+            $base . '_400' . $ext
+        ];
+
+        foreach ($filesToDelete as $file) {
+            $path = $image_dir_path . DIRECTORY_SEPARATOR . $file;
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+    }
+}
+
+// Update contact
+$update_query = '
+    UPDATE contacts
     SET firstName = :firstName,
         lastName = :lastName,
         emailAddress = :emailAddress,
@@ -94,7 +100,7 @@ $query = 'UPDATE contacts
         imageName = :imageName
     WHERE contactID = :contactID';
 
-$statement = $db->prepare($query);
+$statement = $db->prepare($update_query);
 $statement->bindValue(':firstName', $firstName);
 $statement->bindValue(':lastName', $lastName);
 $statement->bindValue(':emailAddress', $emailAddress);
@@ -107,7 +113,7 @@ $statement->bindValue(':contactID', $contactID);
 $statement->execute();
 $statement->closeCursor();
 
-// Save name to session and redirect
+// Confirmation
 $_SESSION["fullName"] = $firstName . " " . $lastName;
 header("Location: update_confirmation.php");
 exit();
