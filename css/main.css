@@ -153,3 +153,42 @@ a {
 a:hover {
   text-decoration: underline;
 }
+.contact-details-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fafafa;
+}
+
+.contact-info {
+  flex: 1;
+  padding: auto;
+}
+
+.contact-info h2 {
+  margin-top: 0;
+}
+
+.contact-info p {
+  margin: 10px 100px;
+  font-size: 1rem;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.contact-info a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.contact-info a:hover {
+  text-decoration: underline;
+}

@@ -49,9 +49,10 @@ $statement1->closeCursor();
         <th>Phone Number</th>
         <th>Status</th>
         <th>Birth Date</th>
-        <th>Contact Type</th> <!-- New column for typeName -->
-        <th>&nbsp;</th> <!-- Edit -->
-        <th>&nbsp;</th> <!-- Delete -->
+        <th>Contact Type</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th> 
       </tr>
       <?php foreach ($contacts as $contact) : ?>
         <tr>
@@ -73,6 +74,12 @@ $statement1->closeCursor();
             <form action="delete_contact.php" method="post">
               <input type="hidden" name="contactID" value="<?php echo $contact['contactID']; ?>"/>
               <input type="submit" value="Delete"/>
+            </form>
+          </td>
+          <td>
+            <form action="view_details.php" method="post">
+              <input type="hidden" name="contactID" value="<?php echo $contact['contactID']; ?>"/>
+              <input type="submit" value="View"/>
             </form>
           </td>
         </tr>
