@@ -14,12 +14,23 @@ if (!empty($filename)) {
     $target = $image_dir_path . DIRECTORY_SEPARATOR . $filename;
     move_uploaded_file($source, $target);
     process_image($image_dir_path, $filename);
+
     $i = strrpos($filename, '.');
-    $image_name = substr($filename, 0, $i);
+    $name = substr($filename, 0, $i);
     $ext = substr($filename, $i);
-    $image_name_100 = $image_name . '_100' . $ext;
+    $image_name_100 = $name . '_100' . $ext;
 } else {
-    $image_name_100 = ''; // Default or handle empty image case
+    // Use placeholder
+    $placeholder = 'placeholder.jpg';
+    $placeholder_100 = 'placeholder_100.jpg';
+    $placeholder_400 = 'placeholder_400.jpg';
+
+    if (!file_exists($image_dir_path . DIRECTORY_SEPARATOR . $placeholder_100) ||
+        !file_exists($image_dir_path . DIRECTORY_SEPARATOR . $placeholder_400)) {
+        process_image($image_dir_path, $placeholder);
+    }
+
+    $image_name_100 = $placeholder_100;
 }
 
 // Get form data
@@ -38,7 +49,7 @@ if (
 ) {
     $_SESSION['error'] = 'Please fill in all required fields.';
     header('Location: error.php');
-    die();
+    exit();
 }
 
 // Check for duplicate email
@@ -52,7 +63,7 @@ $statement1->closeCursor();
 if ($existingContact) {
     $_SESSION['error'] = 'Email address already exists.';
     header('Location: error.php');
-    die();
+    exit();
 }
 
 // Insert contact into database
@@ -74,5 +85,5 @@ $statement->closeCursor();
 
 $_SESSION['fullName'] = $firstName . ' ' . $lastName;
 header('Location: confirmation.php');
-die();
+exit();
 ?>
