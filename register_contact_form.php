@@ -22,6 +22,10 @@
       <div id="formData">
         <label for="firstName">Username:</label>
         <input type="text" name="user_name" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="emailAddress" required><br>
+
         <label for="password">Password:</label>
         <input type="password" name="password" required><br>
       </div> 
