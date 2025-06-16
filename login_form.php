@@ -1,4 +1,6 @@
-
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>  
@@ -17,6 +19,9 @@
   ?>
   <main id='login'>
     <h2>Login</h2>
+    <?php if (isset($_SESSION['login_error'])): ?>
+  <p style="color:red; padding-bottom: 10px;"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
+<?php endif; ?>
     <form action="login.php" method="post" id="loginForm" enctype="multipart/form-data">
       
     <div id="formData">
