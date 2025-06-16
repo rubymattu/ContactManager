@@ -1,64 +1,62 @@
 <?php
-session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+date_default_timezone_set('America/Toronto'); 
 require_once('database.php');
 
-$user_name = filter_input(INPUT_POST, 'user_name');
-$password = filter_input(INPUT_POST, 'password');
+$user_name = $_POST['user_name'];
+$password = $_POST['password'];
 
-if (!$user_name || !$password) {
-    $_SESSION['login_error'] = 'Please enter both username and password.';
-    header('Location: login_form.php');
-    exit;
-}
-
-// Check lockout
-if (isset($_SESSION['lockout_time']) && time() < $_SESSION['lockout_time']) {
-    $_SESSION['login_error'] = 'Too many failed attempts. Try again in 1 minute.';
-    header('Location: login_form.php');
-    exit;
-}
-
-// Case-insensitive username search
-$query = 'SELECT * FROM registrations WHERE userName = :userName';
+$query = "SELECT * FROM registrations WHERE userName = :userName";
 $statement = $db->prepare($query);
 $statement->bindValue(':userName', $user_name);
 $statement->execute();
-$user = $statement->fetch();
+$row = $statement->fetch();
 $statement->closeCursor();
 
-if ($user) {
-    // Verify password
-    if (password_verify($password, $user['password'])) {
-        // Success
-        $_SESSION['isLoggedIn'] = true;
-        $_SESSION['userName'] = $user['userName'];
+if ($row) {
+    $now = new DateTime();
+    $last_failed = new DateTime($row['last_failed_login']);
+    $interval = $now->getTimestamp() - $last_failed->getTimestamp();
+    // $minutes = floor($interval / 60);
+    // var_dump($minutes); // Debugging line to check the interval in minutes
+    // exit;
 
-        // Reset login attempts
-        unset($_SESSION['failed_attempts']);
-        unset($_SESSION['lockout_time']);
-        unset($_SESSION['login_error']);
+    if ($row['failed_attempts'] >= 3 && $interval < 300) {
+        $remaining = 300 - $interval;
+        $_SESSION['login_error'] = "Account locked. Try again in " . ceil($remaining / 60) . " minutes.";
+        header("Location: login_form.php");
+        exit;
+    }
 
-        header('Location: login_confirmation.php');
+    if (password_verify($password, $row['password'])) {
+        // Reset failed attempts on successful login
+        $_SESSION["isLoggedIn"] = TRUE;
+        $query = "UPDATE registrations SET failed_attempts = 0, last_failed_login = NULL WHERE userName = :userName";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':userName', $user_name);
+        $statement->execute();
+        $statement->closeCursor();
+
+        $_SESSION['user_id'] = $row['id'];
+        $_SESSION['userName'] = $row['userName'];
+        header("Location: index.php");
         exit;
     } else {
-        $_SESSION['login_error'] = 'Incorrect password.';
+        // Increment failed attempts
+        $query = "UPDATE registrations 
+                  SET failed_attempts = failed_attempts + 1, 
+                      last_failed_login = NOW() 
+                  WHERE userName = :userName";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':userName', $user_name);
+        $statement->execute();
+        $statement->closeCursor();
+
+        $_SESSION['login_error'] = "Incorrect password.";
+        header("Location: login_form.php");
+        exit;
     }
 } else {
-    $_SESSION['login_error'] = 'Username not found.';
+    $_SESSION['login_error'] = "User not found.";
+    header("Location: login_form.php");
+    exit;
 }
-
-// Handle failed attempts
-$_SESSION['failed_attempts'] = ($_SESSION['failed_attempts'] ?? 0) + 1;
-
-if ($_SESSION['failed_attempts'] >= 3) {
-    $_SESSION['lockout_time'] = time() + 60; // 1 minute
-    $_SESSION['login_error'] = 'Too many failed attempts. You are locked out for 1 minute.';
-}
-
-header('Location: login_form.php');
-exit;
-?>
